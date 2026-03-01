@@ -1,11 +1,13 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { PawPrint, Menu, LogOut } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { PawPrint, Menu, X, LogOut, ChevronRight } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { AuthModal } from '@/components/auth-modal'
 
-interface User {
+interface UserData {
   id: string
   name: string
   email: string
@@ -13,136 +15,227 @@ interface User {
 }
 
 export function Header() {
-  const [session, setSession] = useState<User | null>(null)
+  const [session, setSession] = useState<UserData | null>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [hydrated, setHydrated] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+  const [authModalTab, setAuthModalTab] = useState<'login' | 'signup'>('login')
+  const pathname = usePathname()
 
   useEffect(() => {
-    setHydrated(true)
     const user = localStorage.getItem('user')
     if (user) {
-      setSession(JSON.parse(user))
+      try { setSession(JSON.parse(user)) } catch { setSession(null) }
     }
+  }, [])
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [pathname])
+
+  const handleLogout = useCallback(async () => {
+    try { await fetch('/api/auth/logout', { method: 'POST' }) } catch {}
+    localStorage.removeItem('user')
+    window.location.href = '/'
   }, [])
 
   const navLinks = [
     { href: '/adoption', label: 'Adoption' },
     { href: '/services', label: 'Services' },
-    { href: '/shop', label: 'Pet Shop' },
-    { href: '/hospital', label: 'Pet Hospital' },
+    { href: '/shop', label: 'Shop' },
+    { href: '/hospital', label: 'Hospital' },
     { href: '/fundraising', label: 'Fundraising' },
   ]
 
+  const isActive = (href: string) => pathname === href || pathname?.startsWith(href + '/')
+
   return (
-    <header className="border-b border-orange-200 bg-white sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-        <Link href="/" className="flex items-center gap-2">
-          <PawPrint className="w-8 h-8 text-orange-500" />
-          <h1 className="text-2xl font-bold text-amber-900 hidden sm:block">MEEHOWW</h1>
-        </Link>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex gap-6">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-gray-600 hover:text-orange-500 transition"
-            >
-              {link.label}
+    <>
+      <header
+        className={`sticky top-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? 'bg-white/90 backdrop-blur-xl shadow-[0_1px_3px_rgba(180,140,60,0.08)] border-b border-amber-100/60'
+            : 'bg-white/60 backdrop-blur-md border-b border-amber-50'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="p-1.5 bg-amber-800 rounded-lg group-hover:bg-amber-700 transition-colors">
+                <PawPrint className="w-5 h-5 text-amber-200" />
+              </div>
+              <span className="font-heading text-xl font-semibold tracking-wide text-amber-900">
+                MEEHOWW
+              </span>
             </Link>
-          ))}
-        </nav>
 
-        {/* Desktop Auth */}
-        {hydrated && (
-          <div className="hidden md:flex gap-4">
-            {session ? (
-              <>
-                <Link href="/dashboard">
-                  <Button variant="ghost">{session.name}</Button>
-                </Link>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    localStorage.removeItem('user')
-                    window.location.href = '/'
-                  }}
-                  className="flex items-center gap-2"
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`px-3.5 py-2 rounded-lg text-[13px] font-medium tracking-wide uppercase transition-all duration-200 ${
+                    isActive(link.href)
+                      ? 'text-amber-900 bg-amber-100'
+                      : 'text-amber-700/60 hover:text-amber-900 hover:bg-amber-100/80'
+                  }`}
                 >
-                  <LogOut className="w-4 h-4" />
-                  Sign Out
-                </Button>
-              </>
-            ) : (
-              <>
-                <Link href="/auth/login">
-                  <Button variant="ghost">Login</Button>
+                  {link.label}
                 </Link>
-                <Link href="/auth/signup">
-                  <Button className="bg-orange-500 hover:bg-orange-600">Sign Up</Button>
-                </Link>
-              </>
-            )}
-          </div>
-        )}
+              ))}
+            </nav>
 
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2"
-        >
-          <Menu className="w-6 h-6" />
-        </button>
-      </div>
-
-      {/* Mobile Navigation */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-orange-100 bg-white">
-          <nav className="flex flex-col gap-2 p-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-gray-600 hover:text-orange-500 px-4 py-2"
-              >
-                {link.label}
-              </Link>
-            ))}
-            <div className="pt-4 border-t border-orange-100 flex flex-col gap-2">
+            {/* Desktop Auth */}
+            <div className="hidden lg:flex items-center gap-2.5">
               {session ? (
                 <>
                   <Link href="/dashboard">
-                    <Button variant="ghost" className="w-full justify-start">
-                      {session.user?.name}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="gap-2 text-amber-800 hover:text-amber-900 hover:bg-amber-50"
+                    >
+                      <div className="w-7 h-7 rounded-full bg-amber-800 flex items-center justify-center">
+                        <span className="text-[11px] font-semibold text-amber-200">
+                          {session.name?.charAt(0)?.toUpperCase() || 'U'}
+                        </span>
+                      </div>
+                      <span className="text-sm">{session.name}</span>
                     </Button>
                   </Link>
+                  <div className="w-px h-5 bg-amber-200" />
                   <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => signOut({ redirectTo: '/' })}
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleLogout}
+                    className="gap-1.5 text-amber-600/70 hover:text-red-600 hover:bg-red-50/60 text-sm"
                   >
-                    Sign Out
+                    <LogOut className="w-3.5 h-3.5" />
+                    Logout
                   </Button>
                 </>
               ) : (
                 <>
-                  <Link href="/auth/login" className="w-full">
-                    <Button variant="ghost" className="w-full">
-                      Login
-                    </Button>
-                  </Link>
-                  <Link href="/auth/signup" className="w-full">
-                    <Button className="w-full bg-orange-500 hover:bg-orange-600">
-                      Sign Up
-                    </Button>
-                  </Link>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-amber-800 hover:text-amber-900 hover:bg-amber-50 text-sm"
+                    onClick={() => { setAuthModalTab('login'); setAuthModalOpen(true) }}
+                  >
+                    Log in
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="bg-amber-800 hover:bg-amber-700 text-amber-50 text-sm px-5"
+                    onClick={() => { setAuthModalTab('signup'); setAuthModalOpen(true) }}
+                  >
+                    Get Started
+                  </Button>
                 </>
               )}
             </div>
-          </nav>
+
+            {/* Mobile Menu Toggle */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden p-2 rounded-lg text-amber-700 hover:bg-amber-50 transition-colors"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-40 lg:hidden">
+          <div
+            className="absolute inset-0 bg-amber-900/10 backdrop-blur-sm"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div className="absolute top-16 left-0 right-0 bg-white border-b border-amber-100 shadow-lg animate-in slide-in-from-top-2 duration-200">
+            <nav className="max-w-7xl mx-auto px-4 py-4">
+              <div className="space-y-0.5">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`flex items-center justify-between px-3 py-3 rounded-lg text-sm font-medium tracking-wide transition-all duration-200 ${
+                      isActive(link.href)
+                        ? 'bg-amber-100 text-amber-900'
+                        : 'text-amber-700 hover:bg-amber-100/80 hover:text-amber-900'
+                    }`}
+                  >
+                    {link.label}
+                    <ChevronRight className="w-4 h-4 text-amber-300" />
+                  </Link>
+                ))}
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-amber-100 space-y-2">
+                {session ? (
+                  <>
+                    <Link
+                      href="/dashboard"
+                      className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-amber-50 transition-colors"
+                    >
+                      <div className="w-9 h-9 rounded-full bg-amber-800 flex items-center justify-center">
+                        <span className="text-sm font-semibold text-amber-200">
+                          {session.name?.charAt(0)?.toUpperCase() || 'U'}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-amber-900">{session.name}</p>
+                        <p className="text-xs text-amber-600/70">{session.email}</p>
+                      </div>
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-amber-600/70 hover:text-red-600 hover:bg-red-50/60 transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      className="flex-1 border-amber-200 text-amber-800"
+                      size="sm"
+                      onClick={() => { setMobileMenuOpen(false); setAuthModalTab('login'); setAuthModalOpen(true) }}
+                    >
+                      Log in
+                    </Button>
+                    <Button
+                      className="flex-1 bg-amber-800 hover:bg-amber-700 text-amber-50"
+                      size="sm"
+                      onClick={() => { setMobileMenuOpen(false); setAuthModalTab('signup'); setAuthModalOpen(true) }}
+                    >
+                      Get Started
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </nav>
+          </div>
         </div>
       )}
-    </header>
+
+      <AuthModal
+        open={authModalOpen}
+        onOpenChange={setAuthModalOpen}
+        defaultTab={authModalTab}
+      />
+    </>
   )
 }

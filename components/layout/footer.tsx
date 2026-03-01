@@ -1,37 +1,45 @@
 import Link from 'next/link'
+import { PawPrint } from 'lucide-react'
 
 export function Footer() {
   return (
-    <footer className="border-t border-orange-200 bg-white">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+    <footer className="border-t border-amber-100 bg-amber-50/50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
           <div>
-            <h3 className="font-bold text-amber-900 mb-4">MEEHOWW</h3>
-            <p className="text-gray-600 text-sm">
-              Your trusted pet ecosystem platform for adoption, services, and care.
+            <div className="flex items-center gap-2 mb-4">
+              <div className="p-1.5 bg-amber-800 rounded-lg">
+                <PawPrint className="w-4 h-4 text-amber-200" />
+              </div>
+              <span className="font-heading text-lg font-semibold tracking-wide text-amber-900">
+                MEEHOWW
+              </span>
+            </div>
+            <p className="text-amber-800/60 text-sm leading-relaxed">
+              Your trusted pet ecosystem for adoption, professional services, and compassionate care.
             </p>
           </div>
 
           <div>
-            <h4 className="font-semibold text-gray-900 mb-4">Features</h4>
-            <ul className="space-y-2 text-sm">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-amber-700/50 mb-4">Features</h4>
+            <ul className="space-y-2.5 text-sm">
               <li>
-                <Link href="/adoption" className="text-gray-600 hover:text-orange-500">
+                <Link href="/adoption" className="text-amber-800/70 hover:text-amber-900 transition-colors">
                   Pet Adoption
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="text-gray-600 hover:text-orange-500">
+                <Link href="/services" className="text-amber-800/70 hover:text-amber-900 transition-colors">
                   Services
                 </Link>
               </li>
               <li>
-                <Link href="/shop" className="text-gray-600 hover:text-orange-500">
+                <Link href="/shop" className="text-amber-800/70 hover:text-amber-900 transition-colors">
                   Pet Shop
                 </Link>
               </li>
               <li>
-                <Link href="/hospital" className="text-gray-600 hover:text-orange-500">
+                <Link href="/hospital" className="text-amber-800/70 hover:text-amber-900 transition-colors">
                   Pet Hospital
                 </Link>
               </li>
@@ -39,25 +47,25 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-gray-900 mb-4">Company</h4>
-            <ul className="space-y-2 text-sm">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-amber-700/50 mb-4">Company</h4>
+            <ul className="space-y-2.5 text-sm">
               <li>
-                <Link href="/about" className="text-gray-600 hover:text-orange-500">
+                <Link href="/about" className="text-amber-800/70 hover:text-amber-900 transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-600 hover:text-orange-500">
+                <Link href="/contact" className="text-amber-800/70 hover:text-amber-900 transition-colors">
                   Contact
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="text-gray-600 hover:text-orange-500">
+                <Link href="/privacy" className="text-amber-800/70 hover:text-amber-900 transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-gray-600 hover:text-orange-500">
+                <Link href="/terms" className="text-amber-800/70 hover:text-amber-900 transition-colors">
                   Terms of Service
                 </Link>
               </li>
@@ -65,17 +73,17 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-gray-900 mb-4">Contact</h4>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li>Email: info@meehoww.com</li>
-              <li>Phone: +1 (555) 123-4567</li>
-              <li>Emergency: +1 (555) 999-8888</li>
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-amber-700/50 mb-4">Contact</h4>
+            <ul className="space-y-2.5 text-sm text-amber-800/70">
+              <li>info@meehoww.in</li>
+              <li>+91 98765 43210</li>
+              <li>Emergency: +91 11234 56789</li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-orange-100 pt-8 text-center text-gray-600 text-sm">
-          <p>&copy; 2024 MEEHOWW. All rights reserved.</p>
+        <div className="border-t border-amber-200/50 pt-8 text-center text-amber-700/40 text-xs tracking-wide">
+          <p>&copy; 2025 MEEHOWW. All rights reserved.</p>
         </div>
       </div>
     </footer>

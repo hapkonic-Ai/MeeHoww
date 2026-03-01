@@ -42,15 +42,6 @@ export default function ProfilePage() {
     setLoading(false)
   }, [router])
 
-  useEffect(() => {
-    if (session?.user) {
-      setFormData((prev) => ({
-        ...prev,
-        name: session.user?.name || '',
-        email: session.user?.email || '',
-      }))
-    }
-  }, [session])
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -71,33 +62,33 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50/50 to-white flex flex-col">
       <Header />
 
       <main className="flex-1 max-w-4xl mx-auto px-4 py-12 w-full">
-        <h1 className="text-3xl font-bold text-amber-900 mb-8">My Profile</h1>
+        <h1 className="text-3xl font-bold text-amber-950 mb-8">My Profile</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Profile Summary */}
-          <Card className="p-6 border-orange-100">
+          <Card className="p-6 border-amber-100">
             <div className="text-center mb-6">
               <div className="w-20 h-20 bg-gradient-to-br from-orange-200 to-amber-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <User className="w-10 h-10 text-orange-600" />
+                <User className="w-10 h-10 text-amber-700" />
               </div>
-              <h2 className="text-xl font-semibold text-amber-900">{session.user?.name}</h2>
-              <p className="text-gray-600 text-sm mt-1">Customer Account</p>
+              <h2 className="text-xl font-semibold text-amber-950">{session.name}</h2>
+              <p className="text-amber-700/60 text-sm mt-1">Customer Account</p>
             </div>
 
             <div className="space-y-4">
               <div>
-                <p className="text-xs text-gray-500 uppercase">Account Status</p>
+                <p className="text-xs text-amber-600/50 uppercase">Account Status</p>
                 <p className="text-sm font-semibold text-green-600">Active</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 uppercase">Member Since</p>
+                <p className="text-xs text-amber-600/50 uppercase">Member Since</p>
                 <p className="text-sm font-semibold text-gray-900">2024</p>
               </div>
-              <Button className="w-full bg-orange-500 hover:bg-orange-600 mt-4">
+              <Button className="w-full bg-amber-800 hover:bg-amber-700 mt-4">
                 View Dashboard
               </Button>
             </div>
@@ -105,9 +96,9 @@ export default function ProfilePage() {
 
           {/* Contact Information */}
           <div className="md:col-span-2">
-            <Card className="p-8 border-orange-100">
+            <Card className="p-8 border-amber-100">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-semibold text-amber-900">Contact Information</h3>
+                <h3 className="text-xl font-semibold text-amber-950">Contact Information</h3>
                 <Button
                   variant="outline"
                   size="sm"
@@ -121,7 +112,7 @@ export default function ProfilePage() {
                 <form onSubmit={handleSave} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium mb-2 text-gray-700">
+                      <label className="block text-sm font-medium mb-2 text-amber-800/70">
                         Full Name
                       </label>
                       <input
@@ -132,7 +123,7 @@ export default function ProfilePage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2 text-gray-700">
+                      <label className="block text-sm font-medium mb-2 text-amber-800/70">
                         Email
                       </label>
                       <input
@@ -144,33 +135,33 @@ export default function ProfilePage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-2 text-gray-700">
+                      <label className="block text-sm font-medium mb-2 text-amber-800/70">
                         Phone
                       </label>
                       <input
                         type="tel"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        placeholder="(555) 123-4567"
+                        placeholder="+91 98765 43210"
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-2 text-gray-700">
+                      <label className="block text-sm font-medium mb-2 text-amber-800/70">
                         Address
                       </label>
                       <input
                         type="text"
                         value={formData.address}
                         onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                        placeholder="123 Pet Lane"
+                        placeholder="42 MG Road"
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-2 text-gray-700">
+                      <label className="block text-sm font-medium mb-2 text-amber-800/70">
                         City
                       </label>
                       <input
@@ -182,7 +173,7 @@ export default function ProfilePage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-2 text-gray-700">
+                      <label className="block text-sm font-medium mb-2 text-amber-800/70">
                         State/Province
                       </label>
                       <input
@@ -195,7 +186,7 @@ export default function ProfilePage() {
                   </div>
 
                   <div className="flex gap-3">
-                    <Button type="submit" className="bg-orange-500 hover:bg-orange-600">
+                    <Button type="submit" className="bg-amber-800 hover:bg-amber-700">
                       Save Changes
                     </Button>
                     <Button
@@ -209,20 +200,20 @@ export default function ProfilePage() {
                 </form>
               ) : (
                 <div className="space-y-6">
-                  <div className="flex items-center gap-3 pb-4 border-b border-orange-100">
-                    <Mail className="w-5 h-5 text-orange-500" />
+                  <div className="flex items-center gap-3 pb-4 border-b border-amber-100">
+                    <Mail className="w-5 h-5 text-amber-600" />
         <div>
-          <h1 className="text-3xl font-bold text-amber-900 mb-2">
+          <h1 className="text-3xl font-bold text-amber-950 mb-2">
             {session.name}
           </h1>
-          <p className="text-gray-600">{session.email}</p>
+          <p className="text-amber-700/60">{session.email}</p>
         </div>
                   </div>
 
-                  <div className="flex items-center gap-3 pb-4 border-b border-orange-100">
-                    <Phone className="w-5 h-5 text-orange-500" />
+                  <div className="flex items-center gap-3 pb-4 border-b border-amber-100">
+                    <Phone className="w-5 h-5 text-amber-600" />
                     <div>
-                      <p className="text-xs text-gray-500">Phone</p>
+                      <p className="text-xs text-amber-600/50">Phone</p>
                       <p className="font-semibold text-gray-900">
                         {formData.phone || 'Not provided'}
                       </p>
@@ -230,14 +221,14 @@ export default function ProfilePage() {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <MapPin className="w-5 h-5 text-orange-500 mt-1" />
+                    <MapPin className="w-5 h-5 text-amber-600 mt-1" />
                     <div>
-                      <p className="text-xs text-gray-500">Address</p>
+                      <p className="text-xs text-amber-600/50">Address</p>
                       <p className="font-semibold text-gray-900">
                         {formData.address || 'Not provided'}
                       </p>
                       {(formData.city || formData.state) && (
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-amber-700/60">
                           {formData.city}, {formData.state}
                         </p>
                       )}
@@ -249,22 +240,22 @@ export default function ProfilePage() {
 
             {/* Additional Sections */}
             <div className="grid grid-cols-2 gap-4 mt-6">
-              <Card className="p-6 border-orange-100">
-                <h4 className="font-semibold text-amber-900 mb-2">Pets on Account</h4>
-                <p className="text-3xl font-bold text-orange-600">3</p>
+              <Card className="p-6 border-amber-100">
+                <h4 className="font-semibold text-amber-950 mb-2">Pets on Account</h4>
+                <p className="text-3xl font-bold text-amber-700">3</p>
               </Card>
 
-              <Card className="p-6 border-orange-100">
-                <h4 className="font-semibold text-amber-900 mb-2">Active Bookings</h4>
-                <p className="text-3xl font-bold text-orange-600">1</p>
+              <Card className="p-6 border-amber-100">
+                <h4 className="font-semibold text-amber-950 mb-2">Active Bookings</h4>
+                <p className="text-3xl font-bold text-amber-700">1</p>
               </Card>
             </div>
           </div>
         </div>
 
         {/* Account Security */}
-        <Card className="p-6 border-orange-100 mt-8">
-          <h3 className="text-xl font-semibold text-amber-900 mb-6">Account Security</h3>
+        <Card className="p-6 border-amber-100 mt-8">
+          <h3 className="text-xl font-semibold text-amber-950 mb-6">Account Security</h3>
           <div className="space-y-4">
             <Button variant="outline" className="w-full justify-start">
               Change Password

@@ -23,14 +23,14 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50/50 to-white">
       <Header />
 
       <main className="max-w-7xl mx-auto px-4 py-12">
         {/* Hero Section */}
         <section className="mb-12 text-center">
-          <h1 className="text-4xl font-bold text-amber-900 mb-4">Contact Us</h1>
-          <p className="text-xl text-gray-700">
+          <h1 className="text-4xl font-bold text-amber-950 mb-4">Contact Us</h1>
+          <p className="text-xl text-amber-800/70">
             Have questions? We're here to help. Reach out to our team.
           </p>
         </section>
@@ -38,46 +38,46 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
           {/* Contact Info */}
           <div className="space-y-6">
-            <Card className="p-6 border-orange-100">
+            <Card className="p-6 border-amber-100">
               <div className="flex items-start gap-4">
-                <Mail className="w-6 h-6 text-orange-500 flex-shrink-0 mt-1" />
+                <Mail className="w-6 h-6 text-amber-800 flex-shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-semibold text-amber-900 mb-1">Email</h3>
-                  <p className="text-gray-600">support@meehoww.com</p>
-                  <p className="text-gray-600">business@meehoww.com</p>
+                  <h3 className="font-semibold text-amber-950 mb-1">Email</h3>
+                  <p className="text-amber-700/60">support@meehoww.in</p>
+                  <p className="text-amber-700/60">business@meehoww.in</p>
                 </div>
               </div>
             </Card>
 
-            <Card className="p-6 border-orange-100">
+            <Card className="p-6 border-amber-100">
               <div className="flex items-start gap-4">
-                <Phone className="w-6 h-6 text-orange-500 flex-shrink-0 mt-1" />
+                <Phone className="w-6 h-6 text-amber-800 flex-shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-semibold text-amber-900 mb-1">Phone</h3>
-                  <p className="text-gray-600">+1 (555) 123-4567</p>
-                  <p className="text-gray-600">Emergency: +1 (555) 999-8888</p>
+                  <h3 className="font-semibold text-amber-950 mb-1">Phone</h3>
+                  <p className="text-amber-700/60">+91 22 4567 8900</p>
+                  <p className="text-amber-700/60">Emergency: +91 11234 56789</p>
                 </div>
               </div>
             </Card>
 
-            <Card className="p-6 border-orange-100">
+            <Card className="p-6 border-amber-100">
               <div className="flex items-start gap-4">
-                <MapPin className="w-6 h-6 text-orange-500 flex-shrink-0 mt-1" />
+                <MapPin className="w-6 h-6 text-amber-800 flex-shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-semibold text-amber-900 mb-1">Address</h3>
-                  <p className="text-gray-600">123 Pet Lane</p>
-                  <p className="text-gray-600">New York, NY 10001</p>
+                  <h3 className="font-semibold text-amber-950 mb-1">Address</h3>
+                  <p className="text-amber-700/60">42 Pet Care Lane, Andheri West</p>
+                  <p className="text-amber-700/60">Mumbai 400058</p>
                 </div>
               </div>
             </Card>
 
-            <Card className="p-6 border-orange-100">
+            <Card className="p-6 border-amber-100">
               <div className="flex items-start gap-4">
-                <Clock className="w-6 h-6 text-orange-500 flex-shrink-0 mt-1" />
+                <Clock className="w-6 h-6 text-amber-800 flex-shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-semibold text-amber-900 mb-1">Hours</h3>
-                  <p className="text-gray-600">Mon-Fri: 9 AM - 6 PM</p>
-                  <p className="text-gray-600">Sat-Sun: 10 AM - 4 PM</p>
+                  <h3 className="font-semibold text-amber-950 mb-1">Hours</h3>
+                  <p className="text-amber-700/60">Mon-Fri: 9 AM - 6 PM IST</p>
+                  <p className="text-amber-700/60">Sat: 10 AM - 4 PM IST</p>
                 </div>
               </div>
             </Card>
@@ -85,11 +85,11 @@ export default function ContactPage() {
 
           {/* Contact Form */}
           <div className="lg:col-span-2">
-            <Card className="p-8 border-orange-100">
-              <h2 className="text-2xl font-bold text-amber-900 mb-6">Send us a Message</h2>
+            <Card className="p-8 border-amber-100">
+              <h2 className="text-2xl font-bold text-amber-950 mb-6">Send us a Message</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-amber-800/70 mb-2">
                     Full Name
                   </label>
                   <input
@@ -97,13 +97,13 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="Your name"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
+                    className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:outline-none focus:border-amber-500"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-amber-800/70 mb-2">
                     Email Address
                   </label>
                   <input
@@ -111,19 +111,19 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="your@email.com"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
+                    className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:outline-none focus:border-amber-500"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-amber-800/70 mb-2">
                     Subject
                   </label>
                   <select
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
+                    className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:outline-none focus:border-amber-500"
                     required
                   >
                     <option value="">Select a subject</option>
@@ -137,7 +137,7 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-amber-800/70 mb-2">
                     Message
                   </label>
                   <textarea
@@ -145,14 +145,14 @@ export default function ContactPage() {
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder="Your message here..."
                     rows={5}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
+                    className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:outline-none focus:border-amber-500"
                     required
                   />
                 </div>
 
                 <Button
                   type="submit"
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3"
+                  className="w-full bg-amber-800 hover:bg-amber-700 text-white font-semibold py-3"
                 >
                   Send Message
                 </Button>
@@ -162,8 +162,8 @@ export default function ContactPage() {
         </div>
 
         {/* FAQ Section */}
-        <section className="bg-white rounded-lg p-8 border border-orange-100">
-          <h2 className="text-2xl font-bold text-amber-900 mb-6">Frequently Asked Questions</h2>
+        <section className="bg-white rounded-lg p-8 border border-amber-100">
+          <h2 className="text-2xl font-bold text-amber-950 mb-6">Frequently Asked Questions</h2>
           <div className="space-y-6">
             {[
               {
@@ -180,12 +180,12 @@ export default function ContactPage() {
               },
               {
                 q: 'Is emergency care available 24/7?',
-                a: 'Yes! Our emergency hotline is available 24/7 at +1 (555) 999-8888 for urgent pet care needs.',
+                a: 'Yes! Our emergency hotline is available 24/7 at +91 11234 56789 for urgent pet care needs.',
               },
             ].map((faq, index) => (
               <div key={index}>
-                <h3 className="font-semibold text-amber-900 mb-2">{faq.q}</h3>
-                <p className="text-gray-700">{faq.a}</p>
+                <h3 className="font-semibold text-amber-950 mb-2">{faq.q}</h3>
+                <p className="text-amber-800/70">{faq.a}</p>
               </div>
             ))}
           </div>

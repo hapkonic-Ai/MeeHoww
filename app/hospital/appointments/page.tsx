@@ -1,5 +1,10 @@
 'use client'
 
+import { Header } from '@/components/layout/header'
+import { Footer } from '@/components/layout/footer'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Calendar, Clock, Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -17,15 +22,6 @@ export default function HospitalAppointmentsPage() {
   const router = useRouter()
   const [session, setSession] = useState(null)
   const [appointments, setAppointments] = useState<Appointment[]>([])
-
-  useEffect(() => {
-    const user = localStorage.getItem('user')
-    if (!user) {
-      router.push('/auth/login')
-      return
-    }
-    setSession(JSON.parse(user))
-  }, [router])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [formData, setFormData] = useState({
@@ -38,10 +34,13 @@ export default function HospitalAppointmentsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
+    const user = localStorage.getItem('user')
+    if (!user) {
       router.push('/auth/login')
+      return
     }
-  }, [status, router])
+    setSession(JSON.parse(user))
+  }, [router])
 
   useEffect(() => {
     if (session) {
@@ -55,7 +54,7 @@ export default function HospitalAppointmentsPage() {
       const data = await response.json()
       setAppointments(data.appointments || [])
     } catch (error) {
-      console.error('[v0] Error fetching appointments:', error)
+      console.error('Error fetching appointments:', error)
     } finally {
       setLoading(false)
     }
@@ -90,14 +89,14 @@ export default function HospitalAppointmentsPage() {
       })
       fetchAppointments()
     } catch (error) {
-      console.error('[v0] Error booking appointment:', error)
+      console.error('Error booking appointment:', error)
       alert('Failed to book appointment. Please try again.')
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  if (status === 'loading') {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <p>Loading...</p>
@@ -110,19 +109,19 @@ export default function HospitalAppointmentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50/50 to-white flex flex-col">
       <Header />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-12 w-full">
         {/* Page Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-amber-900 mb-2">Appointments</h1>
-            <p className="text-gray-600">Schedule and manage your pet's veterinary appointments</p>
+            <h1 className="text-3xl font-bold text-amber-950 mb-2">Appointments</h1>
+            <p className="text-amber-700/60">Schedule and manage your pet's veterinary appointments</p>
           </div>
           <Button
             onClick={() => setShowForm(!showForm)}
-            className="bg-orange-500 hover:bg-orange-600 flex items-center gap-2"
+            className="bg-amber-800 hover:bg-amber-700 flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
             Book Appointment
@@ -131,12 +130,12 @@ export default function HospitalAppointmentsPage() {
 
         {/* Booking Form */}
         {showForm && (
-          <Card className="p-8 mb-8 border-orange-100">
-            <h2 className="text-2xl font-bold text-amber-900 mb-6">Book an Appointment</h2>
+          <Card className="p-8 mb-8 border-amber-100">
+            <h2 className="text-2xl font-bold text-amber-950 mb-6">Book an Appointment</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">
+                  <label className="block text-sm font-medium mb-2 text-amber-800/70">
                     Select Pet *
                   </label>
                   <select
@@ -152,7 +151,7 @@ export default function HospitalAppointmentsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">
+                  <label className="block text-sm font-medium mb-2 text-amber-800/70">
                     Service Type *
                   </label>
                   <select
@@ -171,7 +170,7 @@ export default function HospitalAppointmentsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">
+                  <label className="block text-sm font-medium mb-2 text-amber-800/70">
                     Preferred Date *
                   </label>
                   <input
@@ -184,7 +183,7 @@ export default function HospitalAppointmentsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">
+                  <label className="block text-sm font-medium mb-2 text-amber-800/70">
                     Preferred Time *
                   </label>
                   <input
@@ -200,7 +199,7 @@ export default function HospitalAppointmentsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">
+                <label className="block text-sm font-medium mb-2 text-amber-800/70">
                   Additional Notes
                 </label>
                 <textarea
@@ -216,7 +215,7 @@ export default function HospitalAppointmentsPage() {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 bg-orange-500 hover:bg-orange-600"
+                  className="flex-1 bg-amber-800 hover:bg-amber-700"
                 >
                   {isSubmitting ? 'Booking...' : 'Confirm Appointment'}
                 </Button>
@@ -235,14 +234,14 @@ export default function HospitalAppointmentsPage() {
 
         {/* Appointments List */}
         {loading ? (
-          <p className="text-gray-600">Loading appointments...</p>
+          <p className="text-amber-700/60">Loading appointments...</p>
         ) : appointments.length === 0 ? (
-          <Card className="p-8 text-center border-orange-100">
+          <Card className="p-8 text-center border-amber-100">
             <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600 mb-4">You don't have any appointments scheduled</p>
+            <p className="text-amber-700/60 mb-4">You don't have any appointments scheduled</p>
             <Button
               onClick={() => setShowForm(true)}
-              className="bg-orange-500 hover:bg-orange-600"
+              className="bg-amber-800 hover:bg-amber-700"
             >
               <Plus className="w-4 h-4 mr-2" />
               Schedule Your First Appointment
@@ -251,11 +250,11 @@ export default function HospitalAppointmentsPage() {
         ) : (
           <div className="space-y-4">
             {appointments.map((appointment) => (
-              <Card key={appointment.id} className="p-6 border-orange-100 hover:shadow-lg transition">
+              <Card key={appointment.id} className="p-6 border-amber-100 hover:shadow-lg transition">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <div className="flex items-center gap-3">
-                      <h3 className="text-lg font-semibold text-amber-900 capitalize">
+                      <h3 className="text-lg font-semibold text-amber-950 capitalize">
                         {appointment.service_type}
                       </h3>
                       <span
@@ -273,13 +272,13 @@ export default function HospitalAppointmentsPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 py-4 border-t border-b border-orange-100">
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <Calendar className="w-5 h-5 text-orange-500" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 py-4 border-t border-b border-amber-100">
+                  <div className="flex items-center gap-3 text-amber-800/70">
+                    <Calendar className="w-5 h-5 text-amber-600" />
                     <div>
-                      <p className="text-xs text-gray-500">Date</p>
+                      <p className="text-xs text-amber-600/50">Date</p>
                       <p className="font-semibold">
-                        {new Date(appointment.appointment_date).toLocaleDateString('en-US', {
+                        {new Date(appointment.appointment_date).toLocaleDateString('en-IN', {
                           weekday: 'short',
                           year: 'numeric',
                           month: 'short',
@@ -289,12 +288,12 @@ export default function HospitalAppointmentsPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <Clock className="w-5 h-5 text-orange-500" />
+                  <div className="flex items-center gap-3 text-amber-800/70">
+                    <Clock className="w-5 h-5 text-amber-600" />
                     <div>
-                      <p className="text-xs text-gray-500">Time</p>
+                      <p className="text-xs text-amber-600/50">Time</p>
                       <p className="font-semibold">
-                        {new Date(appointment.appointment_date).toLocaleTimeString('en-US', {
+                        {new Date(appointment.appointment_date).toLocaleTimeString('en-IN', {
                           hour: '2-digit',
                           minute: '2-digit',
                         })}
@@ -304,8 +303,8 @@ export default function HospitalAppointmentsPage() {
                 </div>
 
                 {appointment.notes && (
-                  <div className="mb-4 p-3 bg-orange-50 rounded-lg border border-orange-100">
-                    <p className="text-sm text-gray-700">
+                  <div className="mb-4 p-3 bg-orange-50 rounded-lg border border-amber-100">
+                    <p className="text-sm text-amber-800/70">
                       <strong>Notes:</strong> {appointment.notes}
                     </p>
                   </div>

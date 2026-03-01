@@ -6,7 +6,7 @@ import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Star, Clock, MapPin, User } from 'lucide-react'
+import { Star, Clock, MapPin, User, Scissors } from 'lucide-react'
 
 // Mock service data - in production, this would come from the API
 const MOCK_SERVICES: Record<string, any> = {
@@ -14,32 +14,32 @@ const MOCK_SERVICES: Record<string, any> = {
     id: '1',
     name: 'Professional Dog Grooming',
     category: 'Grooming',
-    price: 65,
+    price: 1500,
     duration: 60,
     rating: 4.8,
     reviews: 245,
     description: 'Complete grooming service including bath, haircut, nail trim, and ear cleaning.',
     provider: 'Happy Paws Grooming',
-    location: 'Downtown NYC',
+    location: 'Mumbai, Maharashtra',
   },
   '2': {
     id: '2',
     name: 'Dog Training Class',
     category: 'Training',
-    price: 85,
+    price: 2500,
     duration: 90,
     rating: 4.9,
     reviews: 189,
     description: 'Professional dog training focusing on obedience, behavior, and socialization.',
     provider: 'Pro Trainers Inc',
-    location: 'Multiple Locations',
+    location: 'Delhi, NCR',
   },
 }
 
 export default function ServiceDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const { data: session } = useSession()
+  const [session, setSession] = useState<any>(null)
   const [showBookingForm, setShowBookingForm] = useState(false)
   const [formData, setFormData] = useState({
     petId: '',
@@ -49,14 +49,19 @@ export default function ServiceDetailPage() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  useEffect(() => {
+    const user = localStorage.getItem('user')
+    setSession(user ? JSON.parse(user) : null)
+  }, [])
+
   const service = MOCK_SERVICES[params.id as string]
 
   if (!service) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
+      <div className="min-h-screen bg-gradient-to-b from-amber-50/50 to-white">
         <Header />
         <main className="max-w-7xl mx-auto px-4 py-12">
-          <p className="text-gray-600">Service not found</p>
+          <p className="text-amber-700/60">Service not found</p>
         </main>
         <Footer />
       </div>
@@ -86,7 +91,7 @@ export default function ServiceDetailPage() {
       setShowBookingForm(false)
       setFormData({ petId: '', bookingDate: '', bookingTime: '', notes: '' })
     } catch (error) {
-      console.error('[v0] Error booking service:', error)
+      console.error('Error booking service:', error)
       alert('Failed to book service. Please try again.')
     } finally {
       setIsSubmitting(false)
@@ -94,28 +99,28 @@ export default function ServiceDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50/50 to-white flex flex-col">
       <Header />
 
       <main className="flex-1 max-w-4xl mx-auto px-4 py-12 w-full">
         {/* Service Header */}
-        <Card className="mb-8 border-orange-100">
-          <div className="h-64 bg-gradient-to-br from-orange-300 to-amber-300 flex items-center justify-center text-6xl">
-            🛁
+        <Card className="mb-8 border-amber-100">
+          <div className="h-64 bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
+            <Scissors className="w-16 h-16 text-amber-400/60" />
           </div>
           <div className="p-8">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <p className="text-orange-600 font-semibold text-sm mb-2">{service.category}</p>
-                <h1 className="text-4xl font-bold text-amber-900 mb-2">{service.name}</h1>
+                <p className="text-amber-600 font-semibold text-sm mb-2">{service.category}</p>
+                <h1 className="text-4xl font-bold text-amber-950 mb-2">{service.name}</h1>
               </div>
               <div className="text-right">
-                <p className="text-3xl font-bold text-orange-600">${service.price}</p>
-                <p className="text-sm text-gray-600">per appointment</p>
+                <p className="text-3xl font-bold text-amber-700">₹{service.price}</p>
+                <p className="text-sm text-amber-700/60">per appointment</p>
               </div>
             </div>
 
-            <div className="flex gap-6 mb-6 text-gray-700">
+            <div className="flex gap-6 mb-6 text-amber-800/70">
               <div className="flex items-center gap-2">
                 <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
                 <span>
@@ -123,36 +128,36 @@ export default function ServiceDetailPage() {
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="w-5 h-5 text-orange-500" />
+                <Clock className="w-5 h-5 text-amber-600" />
                 <span>{service.duration} minutes</span>
               </div>
               <div className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-orange-500" />
+                <MapPin className="w-5 h-5 text-amber-600" />
                 <span>{service.location}</span>
               </div>
             </div>
 
-            <p className="text-gray-700 mb-6">{service.description}</p>
+            <p className="text-amber-800/70 mb-6">{service.description}</p>
 
-            <div className="bg-orange-50 p-4 rounded-lg mb-6 border border-orange-200 flex items-start gap-3">
-              <User className="w-5 h-5 text-orange-600 flex-shrink-0 mt-1" />
+            <div className="bg-amber-50/50 p-4 rounded-lg mb-6 border border-amber-100 flex items-start gap-3">
+              <User className="w-5 h-5 text-amber-700 flex-shrink-0 mt-1" />
               <div>
-                <p className="font-semibold text-amber-900">{service.provider}</p>
-                <p className="text-sm text-gray-600">Professional service provider</p>
+                <p className="font-semibold text-amber-950">{service.provider}</p>
+                <p className="text-sm text-amber-700/60">Professional service provider</p>
               </div>
             </div>
 
             {session ? (
               <Button
                 onClick={() => setShowBookingForm(!showBookingForm)}
-                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3"
+                className="bg-amber-800 hover:bg-amber-700 text-white px-8 py-3"
               >
                 {showBookingForm ? 'Cancel Booking' : 'Book Service'}
               </Button>
             ) : (
               <Button
                 onClick={() => router.push('/auth/login')}
-                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3"
+                className="bg-amber-800 hover:bg-amber-700 text-white px-8 py-3"
               >
                 Sign In to Book
               </Button>
@@ -162,12 +167,12 @@ export default function ServiceDetailPage() {
 
         {/* Booking Form */}
         {showBookingForm && (
-          <Card className="p-8 border-orange-100 mb-8">
-            <h2 className="text-2xl font-bold text-amber-900 mb-6">Book This Service</h2>
+          <Card className="p-8 border-amber-100 mb-8">
+            <h2 className="text-2xl font-bold text-amber-950 mb-6">Book This Service</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">
+                  <label className="block text-sm font-medium mb-2 text-amber-800/70">
                     Select Pet (Optional)
                   </label>
                   <select
@@ -182,7 +187,7 @@ export default function ServiceDetailPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">
+                  <label className="block text-sm font-medium mb-2 text-amber-800/70">
                     Preferred Date *
                   </label>
                   <input
@@ -195,7 +200,7 @@ export default function ServiceDetailPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">
+                  <label className="block text-sm font-medium mb-2 text-amber-800/70">
                     Preferred Time *
                   </label>
                   <input
@@ -209,7 +214,7 @@ export default function ServiceDetailPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">
+                <label className="block text-sm font-medium mb-2 text-amber-800/70">
                   Additional Notes
                 </label>
                 <textarea
@@ -221,11 +226,11 @@ export default function ServiceDetailPage() {
                 />
               </div>
 
-              <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                <p className="text-sm text-gray-700 mb-2">
-                  <strong>Service Cost:</strong> ${service.price}
+              <div className="bg-amber-50/50 p-4 rounded-lg border border-amber-100">
+                <p className="text-sm text-amber-800/70 mb-2">
+                  <strong>Service Cost:</strong> ₹{service.price}
                 </p>
-                <p className="text-xs text-gray-600">
+                <p className="text-xs text-amber-700/60">
                   Duration: {service.duration} minutes
                 </p>
               </div>
@@ -234,7 +239,7 @@ export default function ServiceDetailPage() {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 bg-orange-500 hover:bg-orange-600"
+                  className="flex-1 bg-amber-800 hover:bg-amber-700"
                 >
                   {isSubmitting ? 'Booking...' : 'Confirm Booking'}
                 </Button>
@@ -252,8 +257,8 @@ export default function ServiceDetailPage() {
         )}
 
         {/* Service Reviews Section */}
-        <Card className="p-8 border-orange-100">
-          <h2 className="text-2xl font-bold text-amber-900 mb-6">Customer Reviews</h2>
+        <Card className="p-8 border-amber-100">
+          <h2 className="text-2xl font-bold text-amber-950 mb-6">Customer Reviews</h2>
           <div className="space-y-6">
             {[
               {
@@ -269,10 +274,10 @@ export default function ServiceDetailPage() {
                 text: 'Great grooming service. Very attentive to my dog\'s needs. Would recommend!',
               },
             ].map((review, index) => (
-              <div key={index} className="pb-6 border-b border-orange-100 last:border-b-0">
+              <div key={index} className="pb-6 border-b border-amber-100 last:border-b-0">
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <p className="font-semibold text-amber-900">{review.reviewer}</p>
+                    <p className="font-semibold text-amber-950">{review.reviewer}</p>
                     <p className="text-xs text-gray-500">{review.date}</p>
                   </div>
                   <div className="flex gap-1">
@@ -288,7 +293,7 @@ export default function ServiceDetailPage() {
                     ))}
                   </div>
                 </div>
-                <p className="text-gray-700">{review.text}</p>
+                <p className="text-amber-800/70">{review.text}</p>
               </div>
             ))}
           </div>

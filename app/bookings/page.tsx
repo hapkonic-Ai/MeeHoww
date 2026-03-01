@@ -42,7 +42,7 @@ export default function BookingsPage() {
       const data = await response.json()
       setBookings(data.bookings || [])
     } catch (error) {
-      console.error('[v0] Error fetching bookings:', error)
+      console.error('Error fetching bookings:', error)
     } finally {
       setLoading(false)
     }
@@ -91,14 +91,14 @@ export default function BookingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50/50 to-white flex flex-col">
       <Header />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-12 w-full">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-amber-900 mb-2">My Bookings</h1>
-          <p className="text-gray-600">View and manage your service bookings</p>
+          <h1 className="text-3xl font-bold text-amber-950 mb-2">My Bookings</h1>
+          <p className="text-amber-700/60">View and manage your service bookings</p>
         </div>
 
         {/* Filter Tabs */}
@@ -109,7 +109,7 @@ export default function BookingsPage() {
               variant={filter === f ? 'default' : 'outline'}
               onClick={() => setFilter(f)}
               className={
-                filter === f ? 'bg-orange-500 hover:bg-orange-600' : ''
+                filter === f ? 'bg-amber-800 hover:bg-amber-700' : ''
               }
             >
               {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -119,17 +119,17 @@ export default function BookingsPage() {
 
         {/* Bookings List */}
         {loading ? (
-          <p className="text-gray-600">Loading bookings...</p>
+          <p className="text-amber-700/60">Loading bookings...</p>
         ) : filteredBookings.length === 0 ? (
-          <Card className="p-8 text-center border-orange-100">
-            <p className="text-gray-600 mb-4">
+          <Card className="p-8 text-center border-amber-100">
+            <p className="text-amber-700/60 mb-4">
               {filter === 'all'
                 ? "You haven't made any bookings yet"
                 : `No ${filter} bookings`}
             </p>
             <Button
               onClick={() => router.push('/services')}
-              className="bg-orange-500 hover:bg-orange-600"
+              className="bg-amber-800 hover:bg-amber-700"
             >
               Browse Services
             </Button>
@@ -139,12 +139,12 @@ export default function BookingsPage() {
             {filteredBookings.map((booking) => (
               <Card
                 key={booking.id}
-                className="p-6 border-orange-100 hover:shadow-lg transition"
+                className="p-6 border-amber-100 hover:shadow-lg transition"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <div className="flex items-center gap-3">
-                      <h3 className="text-lg font-semibold text-amber-900">
+                      <h3 className="text-lg font-semibold text-amber-950">
                         {booking.service_name}
                       </h3>
                       <span
@@ -157,22 +157,22 @@ export default function BookingsPage() {
                           booking.status.slice(1)}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="text-sm text-amber-700/60 mt-1">
                       {booking.category}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-orange-600">
-                      ${booking.price}
+                    <p className="text-2xl font-bold text-amber-700">
+                      ₹{booking.price}
                     </p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 py-4 border-t border-b border-orange-100">
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <Calendar className="w-5 h-5 text-orange-500" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 py-4 border-t border-b border-amber-100">
+                  <div className="flex items-center gap-3 text-amber-800/70">
+                    <Calendar className="w-5 h-5 text-amber-600" />
                     <div>
-                      <p className="text-xs text-gray-500">Date</p>
+                      <p className="text-xs text-amber-600/50">Date</p>
                       <p className="font-semibold">
                         {new Date(booking.booking_date).toLocaleDateString(
                           'en-US',
@@ -187,10 +187,10 @@ export default function BookingsPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <Clock className="w-5 h-5 text-orange-500" />
+                  <div className="flex items-center gap-3 text-amber-800/70">
+                    <Clock className="w-5 h-5 text-amber-600" />
                     <div>
-                      <p className="text-xs text-gray-500">Time</p>
+                      <p className="text-xs text-amber-600/50">Time</p>
                       <p className="font-semibold">
                         {new Date(booking.booking_date).toLocaleTimeString(
                           'en-US',
@@ -202,8 +202,8 @@ export default function BookingsPage() {
                 </div>
 
                 {booking.pet_name && (
-                  <div className="mb-4 p-3 bg-orange-50 rounded-lg border border-orange-100">
-                    <p className="text-sm text-gray-700">
+                  <div className="mb-4 p-3 bg-orange-50 rounded-lg border border-amber-100">
+                    <p className="text-sm text-amber-800/70">
                       <strong>Pet:</strong> {booking.pet_name}
                     </p>
                   </div>
@@ -211,10 +211,10 @@ export default function BookingsPage() {
 
                 {booking.notes && (
                   <div className="mb-4">
-                    <p className="text-sm text-gray-600 mb-1">
+                    <p className="text-sm text-amber-700/60 mb-1">
                       <strong>Notes:</strong>
                     </p>
-                    <p className="text-sm text-gray-700">{booking.notes}</p>
+                    <p className="text-sm text-amber-800/70">{booking.notes}</p>
                   </div>
                 )}
 

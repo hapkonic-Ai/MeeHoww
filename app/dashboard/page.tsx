@@ -7,7 +7,7 @@ import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { User, Settings, LogOut } from 'lucide-react'
+import { User, LogOut, PawPrint, Scissors, Heart, ShoppingBag, Stethoscope, HandHeart } from 'lucide-react'
 
 interface UserData {
   id: string
@@ -43,13 +43,64 @@ export default function DashboardPage() {
     return null
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('user')
-    router.push('/')
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+    } catch (error) {
+      console.error('Error during logout:', error)
+    } finally {
+      localStorage.removeItem('user')
+      router.push('/')
+    }
   }
 
+  const quickActions = [
+    {
+      title: 'My Pets',
+      description: 'View and manage your pet profiles',
+      buttonText: 'View Pets',
+      href: '/pets',
+      icon: PawPrint,
+    },
+    {
+      title: 'Services',
+      description: 'Book grooming, training, and care services',
+      buttonText: 'Browse Services',
+      href: '/services',
+      icon: Scissors,
+    },
+    {
+      title: 'Adoption',
+      description: 'Find adoptable pets and apply for adoption',
+      buttonText: 'Browse Pets',
+      href: '/adoption',
+      icon: Heart,
+    },
+    {
+      title: 'Pet Shop',
+      description: 'Shop for pet products and supplies',
+      buttonText: 'Browse Products',
+      href: '/shop',
+      icon: ShoppingBag,
+    },
+    {
+      title: 'Pet Hospital',
+      description: 'Emergency care and veterinary services',
+      buttonText: 'Get Help',
+      href: '/hospital',
+      icon: Stethoscope,
+    },
+    {
+      title: 'Fundraising',
+      description: 'Support animal welfare campaigns',
+      buttonText: 'View Campaigns',
+      href: '/fundraising',
+      icon: HandHeart,
+    },
+  ]
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50/50 to-white flex flex-col">
       <Header />
 
       {/* Main Content */}
@@ -57,10 +108,10 @@ export default function DashboardPage() {
         {/* Welcome Section with User Menu */}
         <div className="flex justify-between items-start mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-amber-900 mb-2">
+            <h2 className="text-3xl font-bold text-amber-950 mb-2">
               Welcome, {session.name}!
             </h2>
-            <p className="text-gray-600">Manage your pets, bookings, and preferences</p>
+            <p className="text-amber-700/60">Manage your pets, bookings, and preferences</p>
           </div>
           <div className="flex gap-2">
             <Link href="/profile">
@@ -82,72 +133,32 @@ export default function DashboardPage() {
 
         {/* Quick Actions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Link href="/pets">
-            <Card className="p-6 hover:shadow-lg transition cursor-pointer border-orange-100">
-              <h3 className="text-lg font-semibold mb-2 text-amber-900">My Pets</h3>
-              <p className="text-gray-600 mb-4">View and manage your pet profiles</p>
-              <Button variant="outline" className="w-full">
-                View Pets
-              </Button>
-            </Card>
-          </Link>
-
-          <Link href="/services">
-            <Card className="p-6 hover:shadow-lg transition cursor-pointer border-orange-100">
-              <h3 className="text-lg font-semibold mb-2 text-amber-900">Services</h3>
-              <p className="text-gray-600 mb-4">Book grooming, training, and care services</p>
-              <Button variant="outline" className="w-full">
-                Browse Services
-              </Button>
-            </Card>
-          </Link>
-
-          <Link href="/adoption">
-            <Card className="p-6 hover:shadow-lg transition cursor-pointer border-orange-100">
-              <h3 className="text-lg font-semibold mb-2 text-amber-900">Adoption</h3>
-              <p className="text-gray-600 mb-4">Find adoptable pets and apply for adoption</p>
-              <Button variant="outline" className="w-full">
-                Browse Pets
-              </Button>
-            </Card>
-          </Link>
-
-          <Link href="/shop">
-            <Card className="p-6 hover:shadow-lg transition cursor-pointer border-orange-100">
-              <h3 className="text-lg font-semibold mb-2 text-amber-900">Pet Shop</h3>
-              <p className="text-gray-600 mb-4">Shop for pet products and supplies</p>
-              <Button variant="outline" className="w-full">
-                Browse Products
-              </Button>
-            </Card>
-          </Link>
-
-          <Link href="/hospital">
-            <Card className="p-6 hover:shadow-lg transition cursor-pointer border-orange-100">
-              <h3 className="text-lg font-semibold mb-2 text-amber-900">Pet Hospital</h3>
-              <p className="text-gray-600 mb-4">Emergency care and veterinary services</p>
-              <Button variant="outline" className="w-full">
-                Get Help
-              </Button>
-            </Card>
-          </Link>
-
-          <Link href="/fundraising">
-            <Card className="p-6 hover:shadow-lg transition cursor-pointer border-orange-100">
-              <h3 className="text-lg font-semibold mb-2 text-amber-900">Fundraising</h3>
-              <p className="text-gray-600 mb-4">Support animal welfare campaigns</p>
-              <Button variant="outline" className="w-full">
-                View Campaigns
-              </Button>
-            </Card>
-          </Link>
+          {quickActions.map((action) => {
+            const Icon = action.icon
+            return (
+              <Link key={action.title} href={action.href}>
+                <Card className="p-6 hover:shadow-lg transition cursor-pointer border-amber-100 h-full">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-amber-100 rounded-lg">
+                      <Icon className="w-5 h-5 text-amber-800" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-amber-950">{action.title}</h3>
+                  </div>
+                  <p className="text-amber-700/60 mb-4">{action.description}</p>
+                  <Button variant="outline" className="w-full">
+                    {action.buttonText}
+                  </Button>
+                </Card>
+              </Link>
+            )
+          })}
         </div>
 
         {/* Recent Activity Section */}
         <div className="mt-12">
-          <h3 className="text-2xl font-bold text-amber-900 mb-6">Recent Activity</h3>
-          <Card className="p-6 bg-white border-orange-100">
-            <p className="text-gray-600">Your recent bookings and activities will appear here</p>
+          <h3 className="text-2xl font-bold text-amber-950 mb-6">Recent Activity</h3>
+          <Card className="p-6 bg-white border-amber-100">
+            <p className="text-amber-700/60">Your recent bookings and activities will appear here</p>
           </Card>
         </div>
       </main>

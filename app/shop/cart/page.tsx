@@ -2,6 +2,11 @@
 
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import { Header } from '@/components/layout/header'
+import { Footer } from '@/components/layout/footer'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react'
 
 interface CartItem {
   id: string
@@ -14,8 +19,8 @@ export default function CartPage() {
   const router = useRouter()
   const [session, setSession] = useState(null)
   const [cartItems, setCartItems] = useState<CartItem[]>([
-    { id: '1', name: 'Premium Dog Food', price: 45.99, quantity: 1 },
-    { id: '2', name: 'Cozy Pet Bed', price: 89.99, quantity: 1 },
+    { id: '1', name: 'Premium Dog Food', price: 2499, quantity: 1 },
+    { id: '2', name: 'Cozy Pet Bed', price: 3999, quantity: 1 },
   ])
 
   useEffect(() => {
@@ -32,14 +37,14 @@ export default function CartPage() {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
+      <div className="min-h-screen bg-gradient-to-b from-amber-50/50 to-white">
         <Header />
         <main className="max-w-7xl mx-auto px-4 py-12">
-          <Card className="p-8 text-center border-orange-100">
-            <p className="text-gray-600 mb-4">Please sign in to view your cart</p>
+          <Card className="p-8 text-center border-amber-100">
+            <p className="text-amber-700/60 mb-4">Please sign in to view your cart</p>
             <Button
               onClick={() => router.push('/auth/login')}
-              className="bg-orange-500 hover:bg-orange-600"
+              className="bg-amber-800 hover:bg-amber-700"
             >
               Sign In
             </Button>
@@ -51,8 +56,8 @@ export default function CartPage() {
   }
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const shipping = subtotal > 100 ? 0 : 10
-  const tax = subtotal * 0.08
+  const shipping = subtotal > 2000 ? 0 : 99
+  const tax = subtotal * 0.18
   const total = subtotal + shipping + tax
 
   const updateQuantity = (id: string, change: number) => {
@@ -87,7 +92,7 @@ export default function CartPage() {
       setCartItems([])
       router.push('/orders')
     } catch (error) {
-      console.error('[v0] Error placing order:', error)
+      console.error('Error placing order:', error)
       alert('Failed to place order. Please try again.')
     } finally {
       setIsSubmitting(false)
@@ -95,21 +100,21 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50/50 to-white flex flex-col">
       <Header />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-12 w-full">
-        <h1 className="text-3xl font-bold text-amber-900 mb-8">Shopping Cart</h1>
+        <h1 className="text-3xl font-bold text-amber-950 mb-8">Shopping Cart</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2">
             {cartItems.length === 0 ? (
-              <Card className="p-8 text-center border-orange-100">
-                <p className="text-gray-600 mb-4">Your cart is empty</p>
+              <Card className="p-8 text-center border-amber-100">
+                <p className="text-amber-700/60 mb-4">Your cart is empty</p>
                 <Button
                   onClick={() => router.push('/shop')}
-                  className="bg-orange-500 hover:bg-orange-600"
+                  className="bg-amber-800 hover:bg-amber-700"
                 >
                   Continue Shopping
                 </Button>
@@ -117,26 +122,26 @@ export default function CartPage() {
             ) : (
               <div className="space-y-4">
                 {cartItems.map((item) => (
-                  <Card key={item.id} className="p-6 border-orange-100">
+                  <Card key={item.id} className="p-6 border-amber-100">
                     <div className="flex items-center gap-4">
-                      <div className="w-24 h-24 bg-gradient-to-br from-orange-200 to-amber-200 rounded-lg flex items-center justify-center text-3xl">
-                        📦
+                      <div className="w-24 h-24 bg-gradient-to-br from-amber-100 to-orange-100 rounded-lg flex items-center justify-center text-3xl">
+                        <ShoppingBag className="w-8 h-8 text-amber-400/60" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold text-amber-900">{item.name}</h3>
-                        <p className="text-orange-600 font-bold">${item.price.toFixed(2)}</p>
+                        <h3 className="font-semibold text-amber-950">{item.name}</h3>
+                        <p className="text-amber-700 font-bold">₹{item.price.toFixed(2)}</p>
                       </div>
                       <div className="flex items-center gap-3 bg-gray-100 rounded-lg px-3 py-2">
                         <button
                           onClick={() => updateQuantity(item.id, -1)}
-                          className="hover:text-orange-600"
+                          className="hover:text-amber-700"
                         >
                           <Minus className="w-4 h-4" />
                         </button>
                         <span className="font-semibold">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.id, 1)}
-                          className="hover:text-orange-600"
+                          className="hover:text-amber-700"
                         >
                           <Plus className="w-4 h-4" />
                         </button>
@@ -157,33 +162,33 @@ export default function CartPage() {
           {/* Order Summary & Checkout */}
           {cartItems.length > 0 && (
             <div className="lg:col-span-1">
-              <Card className="p-6 border-orange-100 mb-6 sticky top-4">
-                <h2 className="text-xl font-semibold text-amber-900 mb-6">Order Summary</h2>
-                <div className="space-y-3 mb-6 pb-6 border-b border-orange-200">
-                  <div className="flex justify-between text-gray-700">
+              <Card className="p-6 border-amber-100 mb-6 sticky top-4">
+                <h2 className="text-xl font-semibold text-amber-950 mb-6">Order Summary</h2>
+                <div className="space-y-3 mb-6 pb-6 border-b border-amber-100">
+                  <div className="flex justify-between text-amber-800/70">
                     <span>Subtotal</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                    <span>₹{subtotal.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-700">
+                  <div className="flex justify-between text-amber-800/70">
                     <span>Shipping</span>
-                    <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
+                    <span>{shipping === 0 ? 'Free' : `₹${shipping.toFixed(2)}`}</span>
                   </div>
-                  <div className="flex justify-between text-gray-700">
+                  <div className="flex justify-between text-amber-800/70">
                     <span>Tax</span>
-                    <span>${tax.toFixed(2)}</span>
+                    <span>₹{tax.toFixed(2)}</span>
                   </div>
                 </div>
-                <div className="flex justify-between text-xl font-bold text-orange-600 mb-6">
+                <div className="flex justify-between text-xl font-bold text-amber-700 mb-6">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>₹{total.toFixed(2)}</span>
                 </div>
               </Card>
 
-              <Card className="p-6 border-orange-100">
-                <h2 className="text-lg font-semibold text-amber-900 mb-4">Delivery Info</h2>
+              <Card className="p-6 border-amber-100">
+                <h2 className="text-lg font-semibold text-amber-950 mb-4">Delivery Info</h2>
                 <form onSubmit={handleCheckout} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-gray-700">
+                    <label className="block text-sm font-medium mb-2 text-amber-800/70">
                       Delivery Address *
                     </label>
                     <textarea
@@ -197,7 +202,7 @@ export default function CartPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-gray-700">
+                    <label className="block text-sm font-medium mb-2 text-amber-800/70">
                       Additional Notes
                     </label>
                     <textarea
@@ -212,7 +217,7 @@ export default function CartPage() {
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-orange-500 hover:bg-orange-600"
+                    className="w-full bg-amber-800 hover:bg-amber-700"
                   >
                     {isSubmitting ? 'Processing...' : 'Place Order'}
                   </Button>

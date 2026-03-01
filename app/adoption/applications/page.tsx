@@ -2,6 +2,11 @@
 
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { Header } from '@/components/layout/header'
+import { Footer } from '@/components/layout/footer'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Clock, CheckCircle, AlertCircle, FileText } from 'lucide-react'
 
 interface Application {
   id: string
@@ -42,7 +47,7 @@ export default function AdoptionApplicationsPage() {
       const data = await response.json()
       setApplications(data.applications || [])
     } catch (error) {
-      console.error('[v0] Error fetching applications:', error)
+      console.error('Error fetching applications:', error)
     } finally {
       setLoading(false)
     }
@@ -57,7 +62,7 @@ export default function AdoptionApplicationsPage() {
       case 'rejected':
         return <AlertCircle className="w-5 h-5 text-red-600" />
       case 'withdrawn':
-        return <FileText className="w-5 h-5 text-gray-600" />
+        return <FileText className="w-5 h-5 text-amber-700/60" />
       default:
         return null
     }
@@ -86,22 +91,22 @@ export default function AdoptionApplicationsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50/50 to-white flex flex-col">
       <Header />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-12 w-full">
-        <h1 className="text-3xl font-bold text-amber-900 mb-2">My Adoption Applications</h1>
-        <p className="text-gray-600 mb-8">Track the status of your adoption applications</p>
+        <h1 className="text-3xl font-bold text-amber-950 mb-2">My Adoption Applications</h1>
+        <p className="text-amber-700/60 mb-8">Track the status of your adoption applications</p>
 
         {loading ? (
-          <p className="text-gray-600">Loading applications...</p>
+          <p className="text-amber-700/60">Loading applications...</p>
         ) : applications.length === 0 ? (
-          <Card className="p-8 text-center border-orange-100">
+          <Card className="p-8 text-center border-amber-100">
             <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600 mb-4">You haven't submitted any adoption applications yet</p>
+            <p className="text-amber-700/60 mb-4">You haven't submitted any adoption applications yet</p>
             <Button
               onClick={() => router.push('/adoption')}
-              className="bg-orange-500 hover:bg-orange-600"
+              className="bg-amber-800 hover:bg-amber-700"
             >
               Browse Adoptable Pets
             </Button>
@@ -111,12 +116,12 @@ export default function AdoptionApplicationsPage() {
             {applications.map((app) => (
               <Card
                 key={app.id}
-                className="p-6 border-orange-100 hover:shadow-lg transition"
+                className="p-6 border-amber-100 hover:shadow-lg transition"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <div className="flex items-center gap-3">
-                      <h3 className="text-lg font-semibold text-amber-900">
+                      <h3 className="text-lg font-semibold text-amber-950">
                         Application for {app.pet_name}
                       </h3>
                       <span
@@ -128,7 +133,7 @@ export default function AdoptionApplicationsPage() {
                         {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="text-sm text-amber-700/60 mt-1">
                       Applied on{' '}
                       {new Date(app.created_at).toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -142,13 +147,13 @@ export default function AdoptionApplicationsPage() {
                 <div className="bg-gray-50 rounded-lg p-4 mb-4">
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p className="text-gray-600">Application ID</p>
+                      <p className="text-amber-700/60">Application ID</p>
                       <p className="font-semibold text-gray-900">
                         {app.id.substring(0, 8).toUpperCase()}
                       </p>
                     </div>
                     <div>
-                      <p className="text-gray-600">Last Updated</p>
+                      <p className="text-amber-700/60">Last Updated</p>
                       <p className="font-semibold text-gray-900">
                         {new Date(app.updated_at).toLocaleDateString('en-US', {
                           month: 'short',

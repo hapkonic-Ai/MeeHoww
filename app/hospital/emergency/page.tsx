@@ -1,7 +1,13 @@
 'use client'
 
+import { Header } from '@/components/layout/header'
+import { Footer } from '@/components/layout/footer'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { AlertCircle, Phone, MapPin } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { useAuthGuard } from '@/hooks/use-auth-guard'
 
 interface EmergencyRequest {
   id: string
@@ -15,13 +21,8 @@ interface EmergencyRequest {
 
 export default function EmergencyPage() {
   const router = useRouter()
-  const [session, setSession] = useState(null)
+  const { user, loading: authLoading } = useAuthGuard()
   const [requests, setRequests] = useState<EmergencyRequest[]>([])
-
-  useEffect(() => {
-    const user = localStorage.getItem('user')
-    setSession(user ? JSON.parse(user) : null)
-  }, [])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -33,16 +34,10 @@ export default function EmergencyPage() {
   })
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/auth/login')
-    }
-  }, [status, router])
-
-  useEffect(() => {
-    if (session) {
+    if (user) {
       fetchRequests()
     }
-  }, [session])
+  }, [user])
 
   const fetchRequests = async () => {
     try {
@@ -50,7 +45,7 @@ export default function EmergencyPage() {
       const data = await response.json()
       setRequests(data.requests || [])
     } catch (error) {
-      console.error('[v0] Error fetching emergency requests:', error)
+      console.error('Error fetching emergency requests:', error)
     } finally {
       setLoading(false)
     }
@@ -80,27 +75,23 @@ export default function EmergencyPage() {
       })
       fetchRequests()
     } catch (error) {
-      console.error('[v0] Error submitting emergency request:', error)
-      alert('Failed to submit emergency request. Please call us directly at 1-800-PET-HELP')
+      console.error('Error submitting emergency request:', error)
+      alert('Failed to submit emergency request. Please call us directly at 1800-123-PETS')
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  if (status === 'loading') {
+  if (authLoading || loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p>Loading...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-amber-50/50 to-white">
+        <div className="animate-pulse text-amber-400">Loading...</div>
       </div>
     )
   }
 
-  if (!session) {
-    return null
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50/50 to-white flex flex-col">
       <Header />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-12 w-full">
@@ -117,7 +108,7 @@ export default function EmergencyPage() {
               <div className="flex gap-4">
                 <Button className="bg-red-600 hover:bg-red-700 text-white flex items-center gap-2">
                   <Phone className="w-4 h-4" />
-                  Call: 1-800-PET-HELP
+                  Call: 1800-123-PETS
                 </Button>
               </div>
             </div>
@@ -142,7 +133,7 @@ export default function EmergencyPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">
+                  <label className="block text-sm font-medium mb-2 text-amber-800/70">
                     Pet Name *
                   </label>
                   <select
@@ -158,7 +149,7 @@ export default function EmergencyPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-700">
+                  <label className="block text-sm font-medium mb-2 text-amber-800/70">
                     Emergency Type *
                   </label>
                   <select
@@ -180,7 +171,7 @@ export default function EmergencyPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">
+                <label className="block text-sm font-medium mb-2 text-amber-800/70">
                   Current Location *
                 </label>
                 <div className="flex gap-2">
@@ -199,7 +190,7 @@ export default function EmergencyPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700">
+                <label className="block text-sm font-medium mb-2 text-amber-800/70">
                   Describe the Emergency *
                 </label>
                 <textarea
@@ -207,7 +198,7 @@ export default function EmergencyPage() {
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Please describe what happened and the pet's current condition..."
                   rows={6}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-amber-800/70"
                   required
                 />
               </div>
@@ -243,16 +234,16 @@ export default function EmergencyPage() {
         )}
 
         {/* Previous Emergency Requests */}
-        {!loading && requests.length > 0 && (
+        {requests.length > 0 && (
           <div>
-            <h2 className="text-2xl font-bold text-amber-900 mb-6">Emergency History</h2>
+            <h2 className="text-2xl font-bold text-amber-950 mb-6">Emergency History</h2>
             <div className="space-y-4">
               {requests.map((request) => (
-                <Card key={request.id} className="p-6 border-orange-100 hover:shadow-lg transition">
+                <Card key={request.id} className="p-6 border-amber-100 hover:shadow-lg transition">
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <div className="flex items-center gap-3">
-                        <h3 className="text-lg font-semibold text-amber-900 capitalize">
+                        <h3 className="text-lg font-semibold text-amber-950 capitalize">
                           {request.emergency_type}
                         </h3>
                         <span
@@ -270,8 +261,8 @@ export default function EmergencyPage() {
                         </span>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600">
-                      {new Date(request.created_at).toLocaleDateString('en-US', {
+                    <p className="text-sm text-amber-700/60">
+                      {new Date(request.created_at).toLocaleDateString('en-IN', {
                         month: 'short',
                         day: 'numeric',
                         year: 'numeric',
@@ -279,13 +270,13 @@ export default function EmergencyPage() {
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2 text-gray-700 mb-3">
-                    <MapPin className="w-4 h-4 text-orange-500" />
+                  <div className="flex items-center gap-2 text-amber-800/70 mb-3">
+                    <MapPin className="w-4 h-4 text-amber-600" />
                     <span className="text-sm">{request.location}</span>
                   </div>
 
                   <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 mb-4">
-                    <p className="text-gray-700">{request.description}</p>
+                    <p className="text-amber-800/70">{request.description}</p>
                   </div>
 
                   <Button size="sm" variant="outline" className="w-full">

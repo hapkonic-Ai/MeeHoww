@@ -2,6 +2,11 @@
 
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { Header } from '@/components/layout/header'
+import { Footer } from '@/components/layout/footer'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Clock, Package, Truck, CheckCircle } from 'lucide-react'
 
 interface Order {
   id: string
@@ -28,12 +33,6 @@ export default function OrdersPage() {
   }, [router])
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/auth/login')
-    }
-  }, [status, router])
-
-  useEffect(() => {
     if (session) {
       fetchOrders()
     }
@@ -45,7 +44,7 @@ export default function OrdersPage() {
       const data = await response.json()
       setOrders(data.orders || [])
     } catch (error) {
-      console.error('[v0] Error fetching orders:', error)
+      console.error('Error fetching orders:', error)
     } finally {
       setLoading(false)
     }
@@ -58,7 +57,7 @@ export default function OrdersPage() {
       case 'processing':
         return <Package className="w-5 h-5 text-blue-600" />
       case 'shipped':
-        return <Truck className="w-5 h-5 text-orange-600" />
+        return <Truck className="w-5 h-5 text-amber-700" />
       case 'delivered':
         return <CheckCircle className="w-5 h-5 text-green-600" />
       default:
@@ -70,13 +69,13 @@ export default function OrdersPage() {
     const badges: Record<string, string> = {
       pending: 'bg-yellow-100 text-yellow-800',
       processing: 'bg-blue-100 text-blue-800',
-      shipped: 'bg-orange-100 text-orange-800',
+      shipped: 'bg-amber-100 text-amber-800',
       delivered: 'bg-green-100 text-green-800',
     }
     return badges[status] || 'bg-gray-100 text-gray-800'
   }
 
-  if (status === 'loading') {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <p>Loading...</p>
@@ -89,22 +88,22 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50/50 to-white flex flex-col">
       <Header />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-12 w-full">
-        <h1 className="text-3xl font-bold text-amber-900 mb-2">My Orders</h1>
-        <p className="text-gray-600 mb-8">View and track your product orders</p>
+        <h1 className="text-3xl font-bold text-amber-950 mb-2">My Orders</h1>
+        <p className="text-amber-700/60 mb-8">View and track your product orders</p>
 
         {loading ? (
-          <p className="text-gray-600">Loading orders...</p>
+          <p className="text-amber-700/60">Loading orders...</p>
         ) : orders.length === 0 ? (
-          <Card className="p-8 text-center border-orange-100">
+          <Card className="p-8 text-center border-amber-100">
             <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600 mb-4">You haven't placed any orders yet</p>
+            <p className="text-amber-700/60 mb-4">You haven't placed any orders yet</p>
             <Button
               onClick={() => router.push('/shop')}
-              className="bg-orange-500 hover:bg-orange-600"
+              className="bg-amber-800 hover:bg-amber-700"
             >
               Start Shopping
             </Button>
@@ -114,12 +113,12 @@ export default function OrdersPage() {
             {orders.map((order) => (
               <Card
                 key={order.id}
-                className="p-6 border-orange-100 hover:shadow-lg transition"
+                className="p-6 border-amber-100 hover:shadow-lg transition"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <div className="flex items-center gap-3">
-                      <h3 className="text-lg font-semibold text-amber-900">
+                      <h3 className="text-lg font-semibold text-amber-950">
                         Order #{order.id.substring(0, 8).toUpperCase()}
                       </h3>
                       <span
@@ -131,7 +130,7 @@ export default function OrdersPage() {
                         {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="text-sm text-amber-700/60 mt-1">
                       Ordered on{' '}
                       {new Date(order.created_at).toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -141,14 +140,14 @@ export default function OrdersPage() {
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-orange-600">
-                      ${order.total_amount.toFixed(2)}
+                    <p className="text-2xl font-bold text-amber-700">
+                      ₹{order.total_amount.toFixed(2)}
                     </p>
                   </div>
                 </div>
 
                 <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                  <p className="text-sm text-gray-700">
+                  <p className="text-sm text-amber-800/70">
                     <strong>Last Updated:</strong>{' '}
                     {new Date(order.updated_at).toLocaleDateString('en-US', {
                       year: 'numeric',
@@ -168,7 +167,7 @@ export default function OrdersPage() {
                         ['pending', 'processing', 'shipped', 'delivered'].indexOf(
                           order.status
                         ) >= 0
-                          ? 'text-orange-600 font-semibold'
+                          ? 'text-amber-700 font-semibold'
                           : 'text-gray-400'
                       }`}
                     >
@@ -179,7 +178,7 @@ export default function OrdersPage() {
                         ['processing', 'shipped', 'delivered'].indexOf(
                           order.status
                         ) >= 0
-                          ? 'text-orange-600 font-semibold'
+                          ? 'text-amber-700 font-semibold'
                           : 'text-gray-400'
                       }`}
                     >
@@ -188,7 +187,7 @@ export default function OrdersPage() {
                     <div
                       className={`text-center flex-1 ${
                         ['shipped', 'delivered'].indexOf(order.status) >= 0
-                          ? 'text-orange-600 font-semibold'
+                          ? 'text-amber-700 font-semibold'
                           : 'text-gray-400'
                       }`}
                     >
@@ -197,7 +196,7 @@ export default function OrdersPage() {
                     <div
                       className={`text-center flex-1 ${
                         order.status === 'delivered'
-                          ? 'text-orange-600 font-semibold'
+                          ? 'text-amber-700 font-semibold'
                           : 'text-gray-400'
                       }`}
                     >

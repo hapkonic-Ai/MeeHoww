@@ -325,14 +325,78 @@ app/contact/page.tsx
 app/error.tsx (Next.js error boundary)
 ```
 
+### Phase 9: Design System & UX Overhaul ✅ COMPLETED
+
+**Duration**: Design refinement phase
+**Status**: Complete
+
+#### Tasks Completed:
+1. ✅ Premium Typography
+   - Playfair Display serif font for headings (luxury feel)
+   - DM Sans for body text (clean, modern readability)
+   - CSS custom properties for font-family integration
+   - Location: `/app/layout.tsx`, `/app/globals.css`
+
+2. ✅ Warm Amber Color System
+   - Consistent amber/gold palette across all pages
+   - Primary: amber-800, Headings: amber-950, Body: amber-800/70
+   - Borders: amber-100, Backgrounds: amber-50/50
+   - Buttons: bg-amber-800 hover:bg-amber-700
+
+3. ✅ Animated Landing Page
+   - Floating paw print icons with CSS float animation
+   - Hero section with gradient text
+   - Trust indicators with star ratings
+   - Scroll-triggered animations using IntersectionObserver
+   - Feature cards with individual gradient colors
+   - Stats section, "Why Choose Us" section, CTA section
+   - Location: `/app/page.tsx`, `/hooks/use-scroll-animation.ts`
+
+4. ✅ Smooth Scrolling (ScrollSmoother-style)
+   - Custom lerp-based implementation (no external dependency)
+   - Buttery smooth inertial scrolling on desktop
+   - Keyboard navigation support (arrows, Page Up/Down, Home/End)
+   - Touch devices use native scrolling
+   - Location: `/components/smooth-scroll-provider.tsx`
+
+5. ✅ Popup Auth Modal (Dialog-based)
+   - Login/Signup as popup modal instead of separate pages
+   - Tab switcher between Login and Sign Up
+   - Auto-login after successful signup
+   - Integrated into header (both desktop & mobile)
+   - Integrated into home page CTA buttons
+   - Location: `/components/auth-modal.tsx`
+
+6. ✅ Image Placeholder System
+   - Replaced all placeholder.svg with Lucide icons
+   - Gradient backgrounds with contextual icons (PawPrint, Stethoscope, etc.)
+   - Consistent styling across all listing cards
+
+#### Key Files:
+```
+app/layout.tsx (fonts, smooth scroll provider)
+app/globals.css (color palette, animation keyframes)
+app/page.tsx (animated landing page)
+components/auth-modal.tsx (popup login/signup)
+components/smooth-scroll-provider.tsx (smooth scrolling)
+components/layout/header.tsx (auth modal integration)
+components/layout/footer.tsx (warm amber styling)
+hooks/use-scroll-animation.ts (IntersectionObserver hook)
+hooks/use-auth-guard.ts (auth protection hook)
+```
+
 ## Architecture Overview
 
 ### Frontend Architecture
 ```
 Next.js 16 with App Router
-├── Server Components (RSC)
-├── Client Components ('use client')
-├── API Routes (/api)
+├── Server Components (RSC) - layout, metadata
+├── Client Components ('use client') - all pages with interactivity
+├── API Routes (/api) - REST endpoints
+├── Custom Hooks (/hooks) - useAuthGuard, useScrollAnimation
+├── UI Components (/components/ui) - shadcn/ui primitives
+├── Layout Components (/components/layout) - header, footer
+├── Feature Components (/components) - auth-modal, smooth-scroll-provider
 └── Static Assets (/public)
 ```
 
@@ -364,22 +428,25 @@ Neon PostgreSQL
 
 ## Authentication Flow
 
-1. **Sign Up**
-   - User fills signup form
-   - Password hashed with bcryptjs
-   - User created in database
-   - User redirected to login
+1. **Sign Up / Login (Modal-based)**
+   - User clicks "Get Started" or "Log in" from header or home page
+   - Auth modal popup opens with tab switcher (Login / Sign Up)
+   - On signup: password hashed with bcryptjs, user created, auto-login
+   - On login: credentials validated, user data stored in localStorage
+   - Modal closes and page reloads to reflect auth state
+   - Fallback auth pages still exist at `/auth/login` and `/auth/signup`
 
-2. **Login**
-   - User submits email/password
-   - Credentials validated against database
-   - User data stored in localStorage
-   - User redirected to dashboard
+2. **Browse vs Buy Auth Model**
+   - All pages are browseable without login (adoption, services, shop, hospital, fundraising, about, contact)
+   - Login required only for actions: buy, book, apply, donate, manage pets/orders
+   - Protected pages: dashboard, pets, cart, orders, bookings, profile, appointments, applications, emergency
+   - Action buttons show "Sign In to..." prompt when not logged in
 
 3. **Protected Routes**
-   - Check localStorage for user
-   - Redirect to login if not authenticated
-   - Display user data on authenticated pages
+   - `useAuthGuard` hook checks localStorage for user data
+   - Redirects to `/auth/login` if not authenticated
+   - Used only on action/management pages (not browse pages)
+   - Location: `/hooks/use-auth-guard.ts`
 
 ## Database Schema
 
@@ -567,11 +634,14 @@ POST /api/hospital/emergency
 - **TypeScript**: 5.7.3
 - **Tailwind CSS**: 4.2.0
 - **Database**: Neon PostgreSQL
-- **Authentication**: bcryptjs 2.4.3
+- **Authentication**: bcryptjs 2.4.3 (custom cookie-based sessions)
 - **Form Handling**: React Hook Form 7.54.1
 - **Validation**: Zod 3.24.1
 - **UI Components**: shadcn/ui + Radix UI
 - **Icons**: Lucide React 0.564.0
+- **Fonts**: DM Sans (body) + Playfair Display (headings) via next/font/google
+- **Smooth Scrolling**: Custom lerp-based ScrollSmoother implementation
+- **Analytics**: Vercel Analytics
 
 ## Development Guidelines
 
@@ -581,6 +651,9 @@ POST /api/hospital/emergency
 - Use server components by default
 - Use 'use client' only when necessary
 - Follow functional component patterns
+- Warm amber/gold color palette throughout
+- Playfair Display for headings, DM Sans for body
+- INR (₹) currency formatting
 
 ### Database Queries
 - Use parameterized queries to prevent SQL injection
@@ -641,6 +714,8 @@ Currently, manual testing is performed. Future enhancements:
 - No admin dashboard
 - No advanced search/filtering
 - No API rate limiting
+- Image placeholders use Lucide icons (no real pet photos yet)
+- npm auth token expired on dev machine (run `npm logout` or clear Windows Credential Manager to fix)
 
 ### Future Enhancements
 1. Stripe payment integration
@@ -672,14 +747,17 @@ Currently, manual testing is performed. Future enhancements:
 
 ## Success Metrics
 
-### Phase 1-7 Completion:
+### Phase 1-9 Completion:
 - ✅ Database schema created and tested
-- ✅ Authentication system working
-- ✅ All major pages implemented
+- ✅ Authentication system working (modal-based popup)
+- ✅ All 33 routes implemented
 - ✅ API endpoints functional
 - ✅ Responsive design across devices
 - ✅ User can complete core workflows
 - ✅ Performance optimized
+- ✅ Premium typography and design system
+- ✅ Scroll animations and smooth scrolling
+- ✅ Browse-without-login, buy-with-login model
 
 ### User Experience:
 - Homepage loads in < 2s
@@ -711,7 +789,7 @@ Currently, manual testing is performed. Future enhancements:
 
 ---
 
-**Project Status**: ✅ COMPLETE - Core platform fully implemented and ready for deployment
+**Project Status**: ✅ COMPLETE - Core platform fully implemented with premium design, animations, and popup auth. Ready for deployment
 
 **Last Updated**: March 1, 2026
 **Team**: MEEHOWW Development Team

@@ -1,8 +1,6 @@
 import { auth } from '@/auth'
-import { neon } from '@neondatabase/serverless'
+import { getDb } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
-
-const sql = neon(process.env.DATABASE_URL!)
 
 export async function GET(request: NextRequest) {
   const session = await auth()
@@ -12,6 +10,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const sql = getDb()
     const requests = await sql`
       SELECT id, pet_id, emergency_type, description, status, location, created_at
       FROM emergency_requests
@@ -21,7 +20,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ requests })
   } catch (error) {
-    console.error('[v0] Error fetching emergency requests:', error)
+    console.error('Error fetching emergency requests:', error)
     return NextResponse.json(
       { error: 'Failed to fetch emergency requests' },
       { status: 500 }
@@ -37,6 +36,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const sql = getDb()
     const {
       petId,
       emergencyType,
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
-    console.error('[v0] Error submitting emergency request:', error)
+    console.error('Error submitting emergency request:', error)
     return NextResponse.json(
       { error: 'Failed to submit emergency request' },
       { status: 500 }

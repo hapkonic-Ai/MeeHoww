@@ -1,8 +1,6 @@
 import { auth } from '@/auth'
-import { neon } from '@neondatabase/serverless'
+import { getDb } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
-
-const sql = neon(process.env.DATABASE_URL!)
 
 export async function GET(request: NextRequest) {
   const session = await auth()
@@ -12,6 +10,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const sql = getDb()
     const orders = await sql`
       SELECT id, total_amount, status, created_at, updated_at
       FROM product_orders
@@ -21,7 +20,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ orders })
   } catch (error) {
-    console.error('[v0] Error fetching orders:', error)
+    console.error('Error fetching orders:', error)
     return NextResponse.json(
       { error: 'Failed to fetch orders' },
       { status: 500 }
@@ -37,6 +36,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const sql = getDb()
     const { items, totalAmount, deliveryAddress, notes } = await request.json()
 
     if (!items || !totalAmount) {
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
-    console.error('[v0] Error creating order:', error)
+    console.error('Error creating order:', error)
     return NextResponse.json(
       { error: 'Failed to create order' },
       { status: 500 }

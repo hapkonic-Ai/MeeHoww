@@ -1,8 +1,6 @@
 import { auth } from '@/auth'
-import { neon } from '@neondatabase/serverless'
+import { getDb } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
-
-const sql = neon(process.env.DATABASE_URL!)
 
 export async function GET(request: NextRequest) {
   const session = await auth()
@@ -12,8 +10,9 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const sql = getDb()
     const applications = await sql`
-      SELECT 
+      SELECT
         id, pet_id, status, created_at, updated_at,
         (SELECT name FROM adoption_listings WHERE id = pet_id) as pet_name
       FROM adoption_applications
@@ -23,7 +22,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ applications })
   } catch (error) {
-    console.error('[v0] Error fetching applications:', error)
+    console.error('Error fetching applications:', error)
     return NextResponse.json(
       { error: 'Failed to fetch applications' },
       { status: 500 }
@@ -39,6 +38,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const sql = getDb()
     const {
       petId,
       homeType,
@@ -61,14 +61,14 @@ export async function POST(request: NextRequest) {
 
     const application = await sql`
       INSERT INTO adoption_applications (
-        user_id, pet_id, home_type, home_ownership, has_yard, 
-        number_of_pets, number_of_children, adoption_reason, 
+        user_id, pet_id, home_type, home_ownership, has_yard,
+        number_of_pets, number_of_children, adoption_reason,
         experience, veterinarian, references, status, created_at
       )
       VALUES (
-        ${session.user.id}, ${petId}, ${homeType || null}, ${homeOwnership || null}, 
-        ${hasYard || false}, ${numberOfPets || 0}, ${numberOfChildren || 0}, 
-        ${adoptionReason || null}, ${experience || null}, ${veterinarian || null}, 
+        ${session.user.id}, ${petId}, ${homeType || null}, ${homeOwnership || null},
+        ${hasYard || false}, ${numberOfPets || 0}, ${numberOfChildren || 0},
+        ${adoptionReason || null}, ${experience || null}, ${veterinarian || null},
         ${references || null}, 'pending', NOW()
       )
       RETURNING id, pet_id, status, created_at
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
-    console.error('[v0] Error submitting application:', error)
+    console.error('Error submitting application:', error)
     return NextResponse.json(
       { error: 'Failed to submit application' },
       { status: 500 }

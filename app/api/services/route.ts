@@ -1,29 +1,31 @@
-import { neon } from '@neondatabase/serverless'
+import { getDb } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
-
-const sql = neon(process.env.DATABASE_URL!)
 
 export async function GET(request: NextRequest) {
   try {
+    const sql = getDb()
     const { searchParams } = new URL(request.url)
     const serviceType = searchParams.get('type')
 
-    let query = `
-      SELECT id, name, description, category, price, duration_minutes, provider_id, rating, reviews_count
-      FROM services
-    `
-
+    let services
     if (serviceType) {
-      query += ` WHERE category = '${serviceType}'`
+      services = await sql`
+        SELECT id, name, description, category, price, duration_minutes, provider_id, rating, reviews_count
+        FROM services
+        WHERE category = ${serviceType}
+        ORDER BY rating DESC
+      `
+    } else {
+      services = await sql`
+        SELECT id, name, description, category, price, duration_minutes, provider_id, rating, reviews_count
+        FROM services
+        ORDER BY rating DESC
+      `
     }
-
-    query += ` ORDER BY rating DESC`
-
-    const services = await sql(query)
 
     return NextResponse.json({ services })
   } catch (error) {
-    console.error('[v0] Error fetching services:', error)
+    console.error('Error fetching services:', error)
     return NextResponse.json(
       { error: 'Failed to fetch services' },
       { status: 500 }
@@ -33,6 +35,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const sql = getDb()
     const { name, description, category, price, durationMinutes, providerId } =
       await request.json()
 
@@ -54,7 +57,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
-    console.error('[v0] Error creating service:', error)
+    console.error('Error creating service:', error)
     return NextResponse.json(
       { error: 'Failed to create service' },
       { status: 500 }

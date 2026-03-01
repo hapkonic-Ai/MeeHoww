@@ -1,8 +1,6 @@
 import { auth } from '@/auth'
-import { neon } from '@neondatabase/serverless'
+import { getDb } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
-
-const sql = neon(process.env.DATABASE_URL!)
 
 export async function GET(request: NextRequest) {
   const session = await auth()
@@ -12,6 +10,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const sql = getDb()
     const appointments = await sql`
       SELECT id, pet_id, appointment_date, service_type, notes, status, created_at
       FROM hospital_appointments
@@ -21,7 +20,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ appointments })
   } catch (error) {
-    console.error('[v0] Error fetching appointments:', error)
+    console.error('Error fetching appointments:', error)
     return NextResponse.json(
       { error: 'Failed to fetch appointments' },
       { status: 500 }
@@ -37,6 +36,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const sql = getDb()
     const { petId, appointmentDate, serviceType, notes } = await request.json()
 
     if (!petId || !appointmentDate || !serviceType) {
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
-    console.error('[v0] Error booking appointment:', error)
+    console.error('Error booking appointment:', error)
     return NextResponse.json(
       { error: 'Failed to book appointment' },
       { status: 500 }

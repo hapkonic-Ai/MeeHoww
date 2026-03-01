@@ -1,8 +1,6 @@
 import { auth } from '@/auth'
-import { neon } from '@neondatabase/serverless'
+import { getDb } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
-
-const sql = neon(process.env.DATABASE_URL!)
 
 export async function GET(request: NextRequest) {
   const session = await auth()
@@ -12,31 +10,40 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const sql = getDb()
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
 
-    let query = `
-      SELECT 
-        b.id, b.service_id, b.pet_id, b.booking_date, b.status, b.notes, b.created_at,
-        s.name as service_name, s.price, s.category,
-        p.name as pet_name
-      FROM service_bookings b
-      JOIN services s ON b.service_id = s.id
-      LEFT JOIN pets p ON b.pet_id = p.id
-      WHERE b.user_id = '${session.user.id}'
-    `
-
+    let bookings
     if (status) {
-      query += ` AND b.status = '${status}'`
+      bookings = await sql`
+        SELECT
+          b.id, b.service_id, b.pet_id, b.booking_date, b.status, b.notes, b.created_at,
+          s.name as service_name, s.price, s.category,
+          p.name as pet_name
+        FROM service_bookings b
+        JOIN services s ON b.service_id = s.id
+        LEFT JOIN pets p ON b.pet_id = p.id
+        WHERE b.user_id = ${session.user.id} AND b.status = ${status}
+        ORDER BY b.booking_date DESC
+      `
+    } else {
+      bookings = await sql`
+        SELECT
+          b.id, b.service_id, b.pet_id, b.booking_date, b.status, b.notes, b.created_at,
+          s.name as service_name, s.price, s.category,
+          p.name as pet_name
+        FROM service_bookings b
+        JOIN services s ON b.service_id = s.id
+        LEFT JOIN pets p ON b.pet_id = p.id
+        WHERE b.user_id = ${session.user.id}
+        ORDER BY b.booking_date DESC
+      `
     }
-
-    query += ` ORDER BY b.booking_date DESC`
-
-    const bookings = await sql(query)
 
     return NextResponse.json({ bookings })
   } catch (error) {
-    console.error('[v0] Error fetching bookings:', error)
+    console.error('Error fetching bookings:', error)
     return NextResponse.json(
       { error: 'Failed to fetch bookings' },
       { status: 500 }
@@ -52,6 +59,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const sql = getDb()
     const { serviceId, petId, bookingDate, notes } = await request.json()
 
     if (!serviceId || !bookingDate) {
@@ -72,7 +80,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
-    console.error('[v0] Error creating booking:', error)
+    console.error('Error creating booking:', error)
     return NextResponse.json(
       { error: 'Failed to create booking' },
       { status: 500 }

@@ -1,8 +1,6 @@
 import { auth } from '@/auth'
-import { neon } from '@neondatabase/serverless'
+import { getDb } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
-
-const sql = neon(process.env.DATABASE_URL!)
 
 export async function GET(request: NextRequest) {
   const session = await auth()
@@ -12,6 +10,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const sql = getDb()
     const pets = await sql`
       SELECT id, name, type, breed, age, gender, image_url, created_at
       FROM pets
@@ -21,7 +20,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ pets })
   } catch (error) {
-    console.error('[v0] Error fetching pets:', error)
+    console.error('Error fetching pets:', error)
     return NextResponse.json(
       { error: 'Failed to fetch pets' },
       { status: 500 }
@@ -37,6 +36,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const sql = getDb()
     const { name, type, breed, age, gender } = await request.json()
 
     if (!name || !type) {
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
-    console.error('[v0] Error creating pet:', error)
+    console.error('Error creating pet:', error)
     return NextResponse.json(
       { error: 'Failed to create pet' },
       { status: 500 }

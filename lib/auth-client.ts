@@ -16,8 +16,11 @@ export function isAuthenticated(): boolean {
   return localStorage.getItem('user') !== null
 }
 
-export function logout(): void {
+export async function logout(): Promise<void> {
   if (typeof window === 'undefined') return
+  try {
+    await fetch('/api/auth/logout', { method: 'POST' })
+  } catch {}
   localStorage.removeItem('user')
   window.location.href = '/auth/login'
 }
